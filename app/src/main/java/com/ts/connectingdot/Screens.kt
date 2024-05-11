@@ -1,7 +1,7 @@
 package com.ts.connectingdot
 
 sealed class Screens (
-    route: String
+    val route: String
 ){
 
     data object Splash: Screens("splash")
