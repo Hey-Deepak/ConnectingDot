@@ -28,7 +28,9 @@ import com.streamliners.compose.comp.textInput.config.InputConfig
 import com.streamliners.compose.comp.textInput.config.text
 import com.streamliners.compose.comp.textInput.state.TextInputState
 import com.streamliners.compose.comp.textInput.state.allHaveValidInputs
+import com.streamliners.compose.comp.textInput.state.value
 import com.ts.connectingdot.domain.model.Gender
+import com.ts.connectingdot.domain.model.User
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -118,9 +120,20 @@ fun EditProfileScreen(
                 if(
                     TextInputState.allHaveValidInputs(
                         nameInput, bioInput
-                    ) && gender.value != null
+                    )
                 ){
-                    Toast.makeText(context, "Sahi Jawab", Toast.LENGTH_LONG).show()
+
+                    gender.value?.let { gender ->
+                        Toast.makeText(context, "Sahi Jawab", Toast.LENGTH_LONG).show()
+
+                        val user = User(
+                            name = nameInput.value(),
+                            email = email,
+                            bio = bioInput.value(),
+                            gender = gender
+                        )
+                    }
+
                 } else {
                     Toast.makeText(context, "Galat Jawab", Toast.LENGTH_LONG).show()
                 }
