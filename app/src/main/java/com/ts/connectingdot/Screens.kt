@@ -1,15 +1,22 @@
 package com.ts.connectingdot
 
-sealed class Screens (
+sealed class Screens(
     val route: String
-){
+) {
 
-    data object Splash: Screens("splash")
+    data object Splash : Screens("Splash")
 
-    data object Login: Screens("login")
+    data object Login : Screens("Login")
 
-    data object Profile: Screens("profile")
+    class EditProfile(
+        val email: String
+    ) : Screens("EditProfile?email$email") {
 
-    
+        companion object {
+            fun format() = "EditProfile?email{email}"
+        }
+
+    }
+
 
 }

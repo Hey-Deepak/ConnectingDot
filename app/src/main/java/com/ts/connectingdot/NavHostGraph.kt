@@ -2,9 +2,12 @@ package com.ts.connectingdot
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.ts.connectingdot.feature.login.LoginScreen
+import com.ts.connectingdot.feature.editProfile.EditProfileScreen
 import com.ts.connectingdot.feature.splash.SplashScreen
 
 
@@ -15,7 +18,7 @@ fun NavHostGraph(
 
 
     NavHost(
-        startDestination = Screens.Splash.route,
+        startDestination = Screens.Login.route,
         navController = navController
     ){
 
@@ -29,14 +32,26 @@ fun NavHostGraph(
 
         composable(
             route = Screens.Login.route,
+            arguments = listOf(
+                navArgument("email"){
+                    type = NavType.StringType
+                }
+            )
         ){
-            LoginScreen()
+            LoginScreen(
+                navController = navController
+            )
         }
 
         composable(
-            route = Screens.Profile.route,
+            route = Screens.EditProfile.format(),
         ){
-            LoginScreen()
+
+            val email = it.arguments?.getString("email")?: error("Email Not Found")
+
+            EditProfileScreen(
+                email
+            )
         }
 
 

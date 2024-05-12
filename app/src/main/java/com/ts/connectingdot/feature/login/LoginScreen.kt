@@ -13,15 +13,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import com.ts.connectingdot.Screens
 import com.ts.connectingdot.ui.theme.Primary
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview
 fun LoginScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavController
 ) {
 
     Scaffold(
@@ -46,7 +47,14 @@ fun LoginScreen(
 
             SignInWithGoogleButton(
                 onSuccess = {
-                            Log.e("FB", it.email.toString())
+                    Log.e("FB", it.email.toString())
+
+                    val email = it.email ?: error("Email Not Found")
+
+                    navController.navigate(
+                        Screens.EditProfile(email = email).route
+                    )
+
                 },
                 onError = {}
             )
