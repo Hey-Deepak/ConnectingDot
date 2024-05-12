@@ -51,6 +51,12 @@ android {
     }
 }
 
+configurations {
+    "implementation" {
+        exclude("org.jetbrains.compose.material", "material-desktop")
+    }
+}
+
 dependencies {
 
     implementation(libs.core.ktx)
@@ -70,6 +76,9 @@ dependencies {
 
     // Compose
     implementation(libs.androidx.navigation.compose)
+
+    // DroidLibs
+    implementation(libs.droidlibs.compose.android)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

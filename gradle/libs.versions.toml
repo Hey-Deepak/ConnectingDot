@@ -1,5 +1,6 @@
 [versions]
 agp = "8.2.2"
+droidlibs = "1.2.13"
 firebase-bom = "33.0.0"
 firebase-ui-auth = "7.2.0"
 kotlin = "1.9.0"
@@ -14,6 +15,7 @@ google-service = "4.4.1"
 navigation-compose = "2.7.7"
 
 [libraries]
+droidlibs-compose-android = { module = "com.github.The-Streamliners.DroidLibs:compose-android", version.ref = "droidlibs" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
