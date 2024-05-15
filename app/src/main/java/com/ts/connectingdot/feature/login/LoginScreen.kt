@@ -14,15 +14,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
-import com.ts.connectingdot.Screens
+import com.ts.connectingdot.ui.Screens
 import com.ts.connectingdot.ui.theme.Primary
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    viewModel: LoginViewModel
 ) {
 
     Scaffold(
@@ -51,9 +51,7 @@ fun LoginScreen(
 
                     val email = it.email ?: error("Email Not Found")
 
-                    navController.navigate(
-                        Screens.EditProfile(email = email).route
-                    )
+                    viewModel.onLoggedIn(email, navController)
 
                 },
                 onError = {}
