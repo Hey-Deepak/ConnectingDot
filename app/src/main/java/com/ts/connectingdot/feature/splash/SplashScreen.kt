@@ -14,23 +14,17 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.ts.connectingdot.R
-import com.ts.connectingdot.Screens
 import com.ts.connectingdot.ui.theme.Gradient
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 
 @Composable
-fun SplashScreen(navController: NavController) {
+fun SplashScreen(
+    navController: NavController,
+    viewModel: SplashViewModel
+) {
 
     LaunchedEffect(key1 = Unit) {
-        delay(1500)
-        withContext(Dispatchers.Main){
-            navController.navigate(Screens.Login.route)
-        }
-
+        viewModel.checkLoginStatus(navController)
     }
 
     Box(
