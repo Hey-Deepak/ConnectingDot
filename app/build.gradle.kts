@@ -67,11 +67,25 @@ dependencies {
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
+    implementation(libs.material.icon.extended)
+
+    // Coil
+    implementation(libs.coil.compose)
+
+    // DataStore
+    implementation(libs.androidx.datastore.core)
+
+    // Gson
+    implementation(libs.gson)
+
+    // Koin
+    implementation(libs.koin.android)
 
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
     implementation(libs.firebase.ui.auth)
 
     // Compose
@@ -79,6 +93,7 @@ dependencies {
 
     // DroidLibs
     implementation(libs.droidlibs.compose.android)
+    implementation(libs.droidlibs.pickers)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
