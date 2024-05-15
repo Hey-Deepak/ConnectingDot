@@ -1,4 +1,4 @@
-package com.ts.connectingdot
+package com.ts.connectingdot.ui
 
 sealed class Screens(
     val route: String
@@ -18,5 +18,6 @@ sealed class Screens(
 
     }
 
+    data object Home: Screens("Home")
 
 }
