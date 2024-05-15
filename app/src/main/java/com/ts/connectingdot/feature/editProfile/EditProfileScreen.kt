@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -16,12 +17,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.streamliners.compose.comp.select.RadioGroup
 import com.streamliners.compose.comp.textInput.TextInputLayout
 import com.streamliners.compose.comp.textInput.config.InputConfig
@@ -29,22 +33,42 @@ import com.streamliners.compose.comp.textInput.config.text
 import com.streamliners.compose.comp.textInput.state.TextInputState
 import com.streamliners.compose.comp.textInput.state.allHaveValidInputs
 import com.streamliners.compose.comp.textInput.state.value
+import com.streamliners.pickers.media.FromGalleryType
+import com.streamliners.pickers.media.MediaPickerDialog
+import com.streamliners.pickers.media.MediaPickerDialogState
+import com.streamliners.pickers.media.MediaType
+import com.streamliners.pickers.media.PickedMedia
+import com.streamliners.pickers.media.rememberMediaPickerDialogState
 import com.ts.connectingdot.domain.model.Gender
 import com.ts.connectingdot.domain.model.User
+import com.ts.connectingdot.feature.editProfile.comp.AddImageButton
+import com.ts.connectingdot.feature.editProfile.comp.ProfileImage
+import com.ts.connectingdot.ui.Screens
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileScreen(
+    navController: NavController,
+    viewModel: EditProfileViewModel,
     email: String
 ) {
 
+    val mediaPickerDialogState = rememberMediaPickerDialogState()
+
     Scaffold(
+        modifier = Modifier.imePadding(),
         topBar = {
             TopAppBar(title = { Text(text = "EditProfile")})
         }
     ) { paddingValues ->
 
         val context = LocalContext.current
+        val scope = rememberCoroutineScope()
+
+        val image = remember {
+            mutableStateOf<PickedMedia?>(null)
+        }
 
         val nameInput = remember {
             mutableStateOf(
@@ -71,6 +95,11 @@ fun EditProfileScreen(
         }
 
         val gender = remember { mutableStateOf<Gender?>(null) }
+        val genderError = remember { mutableStateOf(false) }
+
+        LaunchedEffect(key1 = gender.value) {
+            if (gender.value != null) genderError.value = false
+        }
 
 
         Column(
@@ -82,6 +111,34 @@ fun EditProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+
+            val initImagePicker = {
+                mediaPickerDialogState.value = MediaPickerDialogState.Visible(
+                    type = MediaType.Image,
+                    allowMultiple = false,
+                    fromGalleryType = FromGalleryType.VisualMediaPicker
+                ){ getList ->
+                    scope.launch {
+                        val list = getList()
+                        list.firstOrNull()?.let {
+                            image.value = it
+                        }
+                    }
+                }
+            }
+
+            image.value?.let {
+                ProfileImage(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    pickedMedia = it,
+                    onClick = initImagePicker
+                )
+            } ?: run {
+                AddImageButton(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    onClick = initImagePicker
+                )
+            }
 
 
             
@@ -112,7 +169,13 @@ fun EditProfileScreen(
                         options = Gender.entries.toList(),
                         labelExtractor = { it.name }
                     )
+
+                    if (genderError.value){
+                        Text(text = "Required")
+                    }
                 }
+
+
             }
 
             Button(onClick = {
@@ -129,13 +192,22 @@ fun EditProfileScreen(
                         val user = User(
                             name = nameInput.value(),
                             email = email,
+                            profileImageUrl = null,
                             bio = bioInput.value(),
                             gender = gender
                         )
-                    }
 
-                } else {
-                    Toast.makeText(context, "Galat Jawab", Toast.LENGTH_LONG).show()
+                        viewModel.saveUser(user = user, image){
+                            Toast.makeText(context, "User Profile Created", Toast.LENGTH_LONG).show()
+                        }
+
+                        navController.navigate(Screens.Home.route)
+
+                    }
+                }
+
+                if (gender.value == null){
+                    genderError.value = true
                 }
 
             }) {
@@ -145,5 +217,7 @@ fun EditProfileScreen(
         }
 
     }
+
+    MediaPickerDialog(state = mediaPickerDialogState, authority = "com.ts.connectingdot.fileprovider")
 
 }
