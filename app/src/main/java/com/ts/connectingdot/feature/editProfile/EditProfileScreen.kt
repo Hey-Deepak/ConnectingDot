@@ -1,6 +1,7 @@
 package com.ts.connectingdot.feature.editProfile
 
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,12 +34,16 @@ import com.streamliners.compose.comp.textInput.config.text
 import com.streamliners.compose.comp.textInput.state.TextInputState
 import com.streamliners.compose.comp.textInput.state.allHaveValidInputs
 import com.streamliners.compose.comp.textInput.state.value
+import com.streamliners.pickers.date.DatePickerDialog
+import com.streamliners.pickers.date.ShowDatePicker
 import com.streamliners.pickers.media.FromGalleryType
 import com.streamliners.pickers.media.MediaPickerDialog
 import com.streamliners.pickers.media.MediaPickerDialogState
 import com.streamliners.pickers.media.MediaType
 import com.streamliners.pickers.media.PickedMedia
 import com.streamliners.pickers.media.rememberMediaPickerDialogState
+import com.streamliners.utils.DateTimeUtils
+import com.streamliners.utils.DateTimeUtils.Format.DATE_MONTH_YEAR_2
 import com.ts.connectingdot.domain.model.Gender
 import com.ts.connectingdot.domain.model.User
 import com.ts.connectingdot.feature.editProfile.comp.AddImageButton
@@ -51,7 +56,8 @@ import kotlinx.coroutines.launch
 fun EditProfileScreen(
     navController: NavController,
     viewModel: EditProfileViewModel,
-    email: String
+    email: String,
+    showDatePicker: ShowDatePicker
 ) {
 
     val mediaPickerDialogState = rememberMediaPickerDialogState()
@@ -59,7 +65,7 @@ fun EditProfileScreen(
     Scaffold(
         modifier = Modifier.imePadding(),
         topBar = {
-            TopAppBar(title = { Text(text = "EditProfile")})
+            TopAppBar(title = { Text(text = "EditProfile") })
         }
     ) { paddingValues ->
 
@@ -96,6 +102,7 @@ fun EditProfileScreen(
 
         val gender = remember { mutableStateOf<Gender?>(null) }
         val genderError = remember { mutableStateOf(false) }
+        val dob = remember { mutableStateOf<String?>(null) }
 
         LaunchedEffect(key1 = gender.value) {
             if (gender.value != null) genderError.value = false
@@ -117,7 +124,7 @@ fun EditProfileScreen(
                     type = MediaType.Image,
                     allowMultiple = false,
                     fromGalleryType = FromGalleryType.VisualMediaPicker
-                ){ getList ->
+                ) { getList ->
                     scope.launch {
                         val list = getList()
                         list.firstOrNull()?.let {
@@ -141,7 +148,7 @@ fun EditProfileScreen(
             }
 
 
-            
+
             TextInputLayout(state = nameInput)
 
             OutlinedTextField(
@@ -151,7 +158,7 @@ fun EditProfileScreen(
                 enabled = false,
                 label = { Text(text = "Email") }
             )
-            
+
             TextInputLayout(state = bioInput)
 
             Card {
@@ -170,7 +177,7 @@ fun EditProfileScreen(
                         labelExtractor = { it.name }
                     )
 
-                    if (genderError.value){
+                    if (genderError.value) {
                         Text(text = "Required")
                     }
                 }
@@ -178,13 +185,37 @@ fun EditProfileScreen(
 
             }
 
+            // TODO: Min, Max Date
+            // TODO: Make DOB Compulsory
+
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        showDatePicker(
+                            DatePickerDialog.Params(
+                                format = DATE_MONTH_YEAR_2,
+                                prefill = dob.value,
+                                onPicked = { date ->
+                                    dob.value = date
+                                }
+                            )
+                        )
+                    },
+                value = dob.value ?: "",
+                onValueChange = {},
+                readOnly = true,
+                enabled = false,
+                label = { Text(text = "Date of Birth") }
+            )
+
             Button(onClick = {
 
-                if(
+                if (
                     TextInputState.allHaveValidInputs(
                         nameInput, bioInput
                     )
-                ){
+                ) {
 
                     gender.value?.let { gender ->
                         Toast.makeText(context, "Sahi Jawab", Toast.LENGTH_LONG).show()
@@ -194,11 +225,13 @@ fun EditProfileScreen(
                             email = email,
                             profileImageUrl = null,
                             bio = bioInput.value(),
-                            gender = gender
+                            gender = gender,
+                            dob = dob.value
                         )
 
-                        viewModel.saveUser(user = user, image){
-                            Toast.makeText(context, "User Profile Created", Toast.LENGTH_LONG).show()
+                        viewModel.saveUser(user = user, image) {
+                            Toast.makeText(context, "User Profile Created", Toast.LENGTH_LONG)
+                                .show()
                         }
 
                         navController.navigate(Screens.Home.route)
@@ -206,7 +239,7 @@ fun EditProfileScreen(
                     }
                 }
 
-                if (gender.value == null){
+                if (gender.value == null) {
                     genderError.value = true
                 }
 
@@ -218,6 +251,9 @@ fun EditProfileScreen(
 
     }
 
-    MediaPickerDialog(state = mediaPickerDialogState, authority = "com.ts.connectingdot.fileprovider")
+    MediaPickerDialog(
+        state = mediaPickerDialogState,
+        authority = "com.ts.connectingdot.fileprovider"
+    )
 
 }

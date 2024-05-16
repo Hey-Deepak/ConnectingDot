@@ -1,7 +1,7 @@
 [versions]
 agp = "8.2.2"
 coil-compose = "2.2.0"
-droidlibs = "1.2.13"
+droidlibs = "1.2.14"
 firebase-bom = "33.0.0"
 firebase-ui-auth = "7.2.0"
 kotlin = "1.9.0"
@@ -17,11 +17,14 @@ navigation-compose = "2.7.7"
 datastore-core = "1.0.0"
 gson = "2.10.1"
 koin-version = "3.5.3"
+firebase-storage-ktx = "21.0.0"
 
 [libraries]
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
 droidlibs-compose-android = { module = "com.github.The-Streamliners.DroidLibs:compose-android", version.ref = "droidlibs" }
 droidlibs-pickers = { module = "com.github.The-Streamliners.DroidLibs:pickers", version.ref = "droidlibs" }
+droidlibs-base = { module = "com.github.The-Streamliners.DroidLibs:base", version.ref = "droidlibs" }
+droidlibs-utils = { module = "com.github.The-Streamliners.DroidLibs:utils", version.ref = "droidlibs" }
 androidx-datastore-core = { module = "androidx.datastore: datastore-preferences-core", version.ref = "datastore-core"}
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
@@ -47,6 +50,7 @@ ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
 material-icon-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebase-storage-ktx" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -1,4 +1,4 @@
-package com.ts.connectingdot.data
+package com.ts.connectingdot.data.remote
 
 import com.google.firebase.firestore.FirebaseFirestore
 

@@ -1,9 +1,8 @@
 package com.ts.connectingdot.data.remote
 
-import android.provider.ContactsContract.CommonDataKinds.Email
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.ts.connectingdot.data.FirestoreCollection.userColl
+import com.ts.connectingdot.data.remote.FirestoreCollection.userColl
 import com.ts.connectingdot.domain.model.User
 import kotlinx.coroutines.tasks.await
 
