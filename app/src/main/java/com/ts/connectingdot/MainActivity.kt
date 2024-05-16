@@ -9,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.streamliners.base.BaseActivity
+import com.streamliners.base.uiEvent.UiEventDialogs
 import com.ts.connectingdot.ui.NavHostGraph
 import com.ts.connectingdot.ui.theme.ConnectingDotTheme
 
@@ -25,11 +26,9 @@ class MainActivity : BaseActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
-
                     val navController = rememberNavController()
-                    NavHostGraph(
-                        navController
-                    )
+                    NavHostGraph(navController)
+                    UiEventDialogs()
 
                 }
             }

@@ -4,6 +4,11 @@ import androidx.compose.runtime.MutableState
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.streamliners.base.BaseViewModel
+import com.streamliners.base.ext.execute
+import com.streamliners.base.ext.executeOnMain
+import com.streamliners.base.taskState.load
+import com.streamliners.base.taskState.taskStateOf
 import com.streamliners.pickers.media.PickedMedia
 import com.ts.connectingdot.data.LocalRepo
 import com.ts.connectingdot.data.remote.StorageRepo
@@ -16,22 +21,26 @@ class EditProfileViewModel @Inject constructor(
     private val userRepo: UserRepo,
     private val localRepo: LocalRepo,
     private val storageRepo: StorageRepo
-) : ViewModel() {
+) : BaseViewModel() {
+
+    val saveProfileTask = taskStateOf<Unit>()
 
     fun saveUser(user: User, image: MutableState<PickedMedia?>, onSuccess: () -> Unit) {
 
-        viewModelScope.launch {
+        execute(showLoadingDialog = false) {
 
+            saveProfileTask.load {
+                val updatedUser = user.copy(
+                    profileImageUrl = uploadProfileImage(user.email, image.value)
+                )
+                userRepo.saveUser(user = updatedUser)
+                localRepo.onLoggedIn()
+                executeOnMain {
+                    onSuccess()
+                }
+            }
 
-            val updatedUser = user.copy(
-                profileImageUrl = uploadProfileImage(user.email, image.value)
-            )
-
-            userRepo.saveUser(user = updatedUser)
-            localRepo.onLoggedIn()
-            onSuccess()
         }
-
     }
 
     private suspend fun uploadProfileImage(email: String, image: PickedMedia?): String? {

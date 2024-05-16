@@ -1,22 +1,32 @@
 package com.ts.connectingdot.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.streamliners.base.ext.koinBaseViewModel
+import com.streamliners.pickers.date.showDatePickerDialog
+import com.ts.connectingdot.MainActivity
 import com.ts.connectingdot.feature.login.LoginScreen
 import com.ts.connectingdot.feature.editProfile.EditProfileScreen
 import com.ts.connectingdot.feature.home.HomeScreen
 import com.ts.connectingdot.feature.splash.SplashScreen
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
-fun NavHostGraph(
+fun MainActivity.NavHostGraph(
     navController: NavHostController
 ) {
+
+    LaunchedEffect(Unit){
+        delay(100)
+        navController.navigate(Screens.EditProfile("choudharydeepak@gmail.com").route)
+    }
 
     NavHost(
         startDestination = Screens.Login.route,
@@ -46,16 +56,17 @@ fun NavHostGraph(
             )
         }
 
+
+        // Edit Profile Screen
         composable(
             route = Screens.EditProfile.format(),
         ){
-
             val email = it.arguments?.getString("email")?: error("Email Not Found")
-
             EditProfileScreen(
                 navController,
-                koinViewModel(),
-                email
+                koinBaseViewModel(),
+                email,
+                showDatePicker = ::showDatePickerDialog
             )
         }
 

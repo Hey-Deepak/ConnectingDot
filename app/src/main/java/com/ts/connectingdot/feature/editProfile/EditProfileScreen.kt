@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.streamliners.base.taskState.comp.TaskLoadingButton
 import com.streamliners.compose.comp.select.RadioGroup
 import com.streamliners.compose.comp.textInput.TextInputLayout
 import com.streamliners.compose.comp.textInput.config.InputConfig
@@ -209,7 +210,10 @@ fun EditProfileScreen(
                 label = { Text(text = "Date of Birth") }
             )
 
-            Button(onClick = {
+            TaskLoadingButton(
+                state = viewModel.saveProfileTask,
+                label = "SAVE",
+                onClick = {
 
                 if (
                     TextInputState.allHaveValidInputs(
@@ -243,9 +247,7 @@ fun EditProfileScreen(
                     genderError.value = true
                 }
 
-            }) {
-                Text(text = "SAVE")
-            }
+            })
 
         }
 
