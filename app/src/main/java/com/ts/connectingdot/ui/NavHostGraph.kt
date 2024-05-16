@@ -23,10 +23,7 @@ fun MainActivity.NavHostGraph(
     navController: NavHostController
 ) {
 
-    LaunchedEffect(Unit){
-        delay(100)
-        navController.navigate(Screens.EditProfile("choudharydeepak@gmail.com").route)
-    }
+
 
     NavHost(
         startDestination = Screens.Login.route,
@@ -76,7 +73,5 @@ fun MainActivity.NavHostGraph(
             HomeScreen()
         }
 
-
     }
-
 }

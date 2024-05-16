@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.streamliners.base.taskState.comp.TaskLoadingButton
+import com.streamliners.base.taskState.comp.whenLoaded
 import com.streamliners.compose.comp.select.RadioGroup
 import com.streamliners.compose.comp.textInput.TextInputLayout
 import com.streamliners.compose.comp.textInput.config.InputConfig
@@ -236,9 +237,9 @@ fun EditProfileScreen(
                         viewModel.saveUser(user = user, image) {
                             Toast.makeText(context, "User Profile Created", Toast.LENGTH_LONG)
                                 .show()
+                            navController.navigate(Screens.Home.route)
                         }
 
-                        navController.navigate(Screens.Home.route)
 
                     }
                 }
