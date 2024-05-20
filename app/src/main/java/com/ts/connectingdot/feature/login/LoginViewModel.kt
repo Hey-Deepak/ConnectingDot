@@ -19,7 +19,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             val user = userRepo.getUserWithEmail(email)
             if (user != null){
-                    localRepo.onLoggedIn()
+                    localRepo.onLoggedIn(user)
                     navController.navigate(Screens.Home.route)
             } else {
                 navController.navigate(

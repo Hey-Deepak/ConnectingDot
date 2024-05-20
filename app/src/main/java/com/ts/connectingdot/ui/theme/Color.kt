@@ -12,7 +12,10 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val Primary = Color(0xFF6E008A)
+val PrimaryLight = Color(0xFF984CAC)
 val Secondary = Color(0xFF150099)
+
+val Neutral50 =  Color(0xFF7B7579)
 
 val Gradient = Brush.linearGradient(
     listOf(

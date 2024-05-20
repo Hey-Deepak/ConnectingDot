@@ -34,7 +34,7 @@ class EditProfileViewModel @Inject constructor(
                     profileImageUrl = uploadProfileImage(user.email, image.value)
                 )
                 userRepo.saveUser(user = updatedUser)
-                localRepo.onLoggedIn()
+                localRepo.onLoggedIn(updatedUser)
                 executeOnMain {
                     onSuccess()
                 }

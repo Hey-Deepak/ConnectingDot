@@ -1,7 +1,6 @@
 package com.ts.connectingdot.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -10,11 +9,12 @@ import androidx.navigation.navArgument
 import com.streamliners.base.ext.koinBaseViewModel
 import com.streamliners.pickers.date.showDatePickerDialog
 import com.ts.connectingdot.MainActivity
+import com.ts.connectingdot.feature.chat.ChatScreen
 import com.ts.connectingdot.feature.login.LoginScreen
 import com.ts.connectingdot.feature.editProfile.EditProfileScreen
 import com.ts.connectingdot.feature.home.HomeScreen
+import com.ts.connectingdot.feature.newChat.NewChat
 import com.ts.connectingdot.feature.splash.SplashScreen
-import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -26,7 +26,7 @@ fun MainActivity.NavHostGraph(
 
 
     NavHost(
-        startDestination = Screens.Login.route,
+        startDestination = Screens.Splash.route,
         navController = navController
     ){
 
@@ -67,10 +67,38 @@ fun MainActivity.NavHostGraph(
             )
         }
 
+        // Home Screen
         composable(
             route = Screens.Home.route
         ){
-            HomeScreen()
+            HomeScreen(
+                navController
+            )
+        }
+
+        // New Chat Screen
+        composable(
+            route = Screens.NewChat.route
+        ){
+            NewChat(
+                navController,
+                koinBaseViewModel()
+            )
+        }
+
+        // Chat Screen
+        composable(
+            route = Screens.Chat.format(),
+            arguments = listOf(
+                navArgument("channelId"){
+                    type = NavType.StringType
+                }
+            )
+        ){
+            val channelId = it.arguments?.getString("channelId")?: error("ChannelId Arg Not Found")
+            ChatScreen(
+                channelId = channelId,
+                navController = navController)
         }
 
     }

@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.ts.connectingdot.ui.Screens
 import com.ts.connectingdot.ui.theme.Primary
 
@@ -21,7 +22,7 @@ import com.ts.connectingdot.ui.theme.Primary
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    navController: NavController,
+    navController: NavHostController,
     viewModel: LoginViewModel
 ) {
 

@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.compose.rememberNavController
 import com.streamliners.base.BaseActivity
 import com.streamliners.base.uiEvent.UiEventDialogs
+import com.ts.connectingdot.helper.temp.Scripts
 import com.ts.connectingdot.ui.NavHostGraph
 import com.ts.connectingdot.ui.theme.ConnectingDotTheme
 
@@ -32,6 +34,15 @@ class MainActivity : BaseActivity() {
 
                 }
             }
+        }
+
+       // runScript()
+
+    }
+
+    private fun runScript (){
+        execute {
+            Scripts.saveDummyUsers()
         }
     }
 }

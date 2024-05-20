@@ -14,12 +14,13 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.ts.connectingdot.R
 import com.ts.connectingdot.ui.theme.Gradient
 
 @Composable
 fun SplashScreen(
-    navController: NavController,
+    navController: NavHostController,
     viewModel: SplashViewModel
 ) {
 
