@@ -4,6 +4,7 @@ import com.ts.connectingdot.data.LocalRepo
 import com.ts.connectingdot.data.remote.ChannelRepo
 import com.ts.connectingdot.data.remote.StorageRepo
 import com.ts.connectingdot.data.remote.UserRepo
+import com.ts.connectingdot.feature.chat.ChatViewModel
 import com.ts.connectingdot.feature.editProfile.EditProfileViewModel
 import com.ts.connectingdot.feature.home.HomeViewModel
 import com.ts.connectingdot.feature.login.LoginViewModel
@@ -26,5 +27,6 @@ val viewModelModule = module{
     viewModel { LoginViewModel(get(), get()) }
     viewModel { NewChatViewModel(get(), get(), get() ) }
     viewModel { HomeViewModel(get(), get(), get())}
+    viewModel { ChatViewModel(get(), get()) }
 
 }

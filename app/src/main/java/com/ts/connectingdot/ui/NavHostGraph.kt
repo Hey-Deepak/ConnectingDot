@@ -99,7 +99,8 @@ fun MainActivity.NavHostGraph(
             val channelId = it.arguments?.getString("channelId")?: error("ChannelId Arg Not Found")
             ChatScreen(
                 channelId = channelId,
-                navController = navController)
+                navController = navController,
+                koinBaseViewModel())
         }
 
     }

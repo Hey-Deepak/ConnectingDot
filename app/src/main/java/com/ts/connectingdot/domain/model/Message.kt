@@ -3,7 +3,7 @@ package com.ts.connectingdot.domain.model
 import com.google.firebase.Timestamp
 
 data class Message(
-    val time: Timestamp,
+    val time: Timestamp = Timestamp.now(),
     // UserId of the sender
     val sender: String,
     val message: String,
