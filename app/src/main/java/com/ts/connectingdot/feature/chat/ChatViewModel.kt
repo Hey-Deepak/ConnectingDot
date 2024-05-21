@@ -7,7 +7,6 @@ import com.streamliners.base.taskState.update
 import com.streamliners.base.taskState.value
 import com.ts.connectingdot.data.LocalRepo
 import com.ts.connectingdot.data.remote.ChannelRepo
-import com.ts.connectingdot.data.remote.UserRepo
 import com.ts.connectingdot.domain.model.Channel
 import com.ts.connectingdot.domain.model.Message
 import com.ts.connectingdot.domain.model.User
@@ -20,20 +19,26 @@ class ChatViewModel(
     private val localRepo: LocalRepo
 ): BaseViewModel() {
 
+    class Data(
+        val channel: Channel,
+        val user: User
+    )
 
-    val channel = taskStateOf<Channel>()
-    lateinit var user: User
+    val data = taskStateOf<Data>()
 
     fun start(
         channelId: String
     ){
 
         execute {
-            user = localRepo.getLoggedInUser()
+            val user = localRepo.getLoggedInUser()
             launch {
                 channelRepo.subscribeToChannel(channelId).collectLatest {
-                    channel.update(
-                        channelRepo.getChannel(channelId)
+                    data.update(
+                        Data(
+                            channelRepo.getChannel(channelId),
+                            user
+                        )
                     )
                 }
             }
@@ -47,12 +52,12 @@ class ChatViewModel(
         onSuccess: () -> Unit,
     ){
         val message = Message(
-            sender = user.id(),
+            sender = data.value().user.id(),
             message = messageStr,
             mediaUrl = null,
         )
         execute {
-            channelRepo.sendMessage(channel.value().id(), message)
+            channelRepo.sendMessage(data.value().channel.id(), message)
             onSuccess()
         }
     }
