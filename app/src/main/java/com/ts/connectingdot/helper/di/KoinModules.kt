@@ -5,6 +5,7 @@ import com.ts.connectingdot.data.remote.ChannelRepo
 import com.ts.connectingdot.data.remote.StorageRepo
 import com.ts.connectingdot.data.remote.UserRepo
 import com.ts.connectingdot.feature.editProfile.EditProfileViewModel
+import com.ts.connectingdot.feature.home.HomeViewModel
 import com.ts.connectingdot.feature.login.LoginViewModel
 import com.ts.connectingdot.feature.newChat.NewChatViewModel
 import com.ts.connectingdot.feature.splash.SplashViewModel
@@ -24,4 +25,6 @@ val viewModelModule = module{
     viewModel { EditProfileViewModel(get(), get(), get()) }
     viewModel { LoginViewModel(get(), get()) }
     viewModel { NewChatViewModel(get(), get(), get() ) }
+    viewModel { HomeViewModel(get(), get(), get())}
+
 }

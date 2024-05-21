@@ -24,6 +24,7 @@ class LoginViewModel @Inject constructor(
             } else {
                 navController.navigate(
                     Screens.EditProfile(email).route
+                    //Screens.Login.route
                 )
             }
 

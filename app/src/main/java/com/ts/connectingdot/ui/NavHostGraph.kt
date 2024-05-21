@@ -1,6 +1,7 @@
 package com.ts.connectingdot.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -15,6 +16,7 @@ import com.ts.connectingdot.feature.editProfile.EditProfileScreen
 import com.ts.connectingdot.feature.home.HomeScreen
 import com.ts.connectingdot.feature.newChat.NewChat
 import com.ts.connectingdot.feature.splash.SplashScreen
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -22,8 +24,6 @@ import org.koin.androidx.compose.koinViewModel
 fun MainActivity.NavHostGraph(
     navController: NavHostController
 ) {
-
-
 
     NavHost(
         startDestination = Screens.Splash.route,
@@ -56,7 +56,7 @@ fun MainActivity.NavHostGraph(
 
         // Edit Profile Screen
         composable(
-            route = Screens.EditProfile.format(),
+            route = Screens.EditProfile.format()
         ){
             val email = it.arguments?.getString("email")?: error("Email Not Found")
             EditProfileScreen(
@@ -72,7 +72,8 @@ fun MainActivity.NavHostGraph(
             route = Screens.Home.route
         ){
             HomeScreen(
-                navController
+                navController,
+                koinBaseViewModel()
             )
         }
 

@@ -28,7 +28,7 @@ fun AsyncImage(
             .build(),
         contentDescription = "",
         contentScale = ContentScale.FillBounds,
-        modifier = Modifier
+        modifier = modifier
             .size(100.dp)
             .clip(CircleShape)
             .run {

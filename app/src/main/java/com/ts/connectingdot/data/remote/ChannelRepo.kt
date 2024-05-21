@@ -51,7 +51,7 @@ class ChannelRepo {
 
           return Firebase.firestore.channelColl()
                .whereEqualTo(Channel::type.name, Channel.Type.OneToOne)
-               .whereArrayContains(Channel::members.name, listOf(userId))
+               .whereArrayContains(Channel::members.name, userId)
                .get()
                .await()
                .toObjects(Channel::class.java)
