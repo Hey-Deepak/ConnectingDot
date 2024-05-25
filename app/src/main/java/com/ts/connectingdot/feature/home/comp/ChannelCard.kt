@@ -43,7 +43,7 @@ fun ChannelCard(
             // TODO: if OneToOne, show otherUser.profileImage otherwise channel.imageUrl
             AsyncImage(
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(36.dp)
                     .clip(CircleShape),
                 uri = channel.imageUrl ?: "",
                 placeHolder = painterResource(id = R.drawable.ic_person)
@@ -58,7 +58,7 @@ fun ChannelCard(
                     color = Color.Black
 
                 )
-               /* Text(text = channel.members.joinToString(", "),
+                /*Text(text = channel,
                     style = MaterialTheme.typography.bodyMedium,
                     color = Neutral50
 

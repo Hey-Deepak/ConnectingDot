@@ -1,5 +1,7 @@
 package com.ts.connectingdot.feature.chat
 
+import android.icu.util.TimeZone.SystemTimeZoneType
+import androidx.core.net.toUri
 import com.streamliners.base.BaseViewModel
 import com.streamliners.base.ext.execute
 import com.streamliners.base.taskState.taskStateOf
@@ -8,6 +10,8 @@ import com.streamliners.base.taskState.value
 import com.streamliners.utils.DateTimeUtils
 import com.ts.connectingdot.data.LocalRepo
 import com.ts.connectingdot.data.remote.ChannelRepo
+import com.ts.connectingdot.data.remote.StorageRepo
+import com.ts.connectingdot.data.remote.UserRepo
 import com.ts.connectingdot.domain.model.Channel
 import com.ts.connectingdot.domain.model.Message
 import com.ts.connectingdot.domain.model.User
@@ -17,7 +21,8 @@ import kotlinx.coroutines.launch
 
 class ChatViewModel(
     private val channelRepo: ChannelRepo,
-    private val localRepo: LocalRepo
+    private val localRepo: LocalRepo,
+    private val storageRepo: StorageRepo
 ): BaseViewModel() {
 
     sealed class ChatListItem{
@@ -106,5 +111,25 @@ class ChatViewModel(
             channelRepo.sendMessage(data.value().channel.id(), message)
             onSuccess()
         }
+    }
+
+    fun sendImage(uri: String){
+
+
+        execute {
+            val email = localRepo.getLoggedInUser().email
+            val timestamp = System.currentTimeMillis()
+            // TODO: Use the exact file extension
+            val imageUrl = storageRepo.uploadFile("media/$timestamp-$email", uri.toUri())
+            val message = Message(
+                sender = data.value().user.id(),
+                message = "",
+                mediaUrl = imageUrl,
+            )
+
+            channelRepo.sendMessage(data.value().channel.id(), message)
+        }
+
+
     }
 }

@@ -18,7 +18,8 @@ fun AsyncImage(
     modifier: Modifier,
     uri: String,
     onClick: (() -> Unit)? = null,
-    placeHolder: Painter? = null
+    placeHolder: Painter? = null,
+    contentScale: ContentScale = ContentScale.FillBounds,
 ) {
 
     AsyncImage(
@@ -27,10 +28,8 @@ fun AsyncImage(
             .crossfade(enable = true)
             .build(),
         contentDescription = "",
-        contentScale = ContentScale.FillBounds,
+        contentScale = contentScale,
         modifier = modifier
-            .size(100.dp)
-            .clip(CircleShape)
             .run {
                 onClick?.let { clickable { it() } } ?: this
             },

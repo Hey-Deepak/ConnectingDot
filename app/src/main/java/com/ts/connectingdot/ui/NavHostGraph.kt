@@ -40,12 +40,7 @@ fun MainActivity.NavHostGraph(
         }
 
         composable(
-            route = Screens.Login.route,
-            arguments = listOf(
-                navArgument("email"){
-                    type = NavType.StringType
-                }
-            )
+            route = Screens.Login.route
         ){
             LoginScreen(
                 navController = navController,
@@ -56,7 +51,12 @@ fun MainActivity.NavHostGraph(
 
         // Edit Profile Screen
         composable(
-            route = Screens.EditProfile.format()
+            route = Screens.EditProfile.format(),
+            arguments = listOf(
+                navArgument("email"){
+                    type = NavType.StringType
+                }
+            )
         ){
             val email = it.arguments?.getString("email")?: error("Email Not Found")
             EditProfileScreen(
