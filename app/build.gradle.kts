@@ -87,6 +87,7 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
+    implementation(libs.firebase.messaging)
     implementation(libs.firebase.ui.auth)
 
     // Compose
@@ -97,6 +98,7 @@ dependencies {
     implementation(libs.droidlibs.pickers)
     implementation(libs.droidlibs.base)
     implementation(libs.droidlibs.utils)
+    implementation(libs.droidlibs.helpers)
     implementation(libs.firebase.storage.ktx)
 
     testImplementation(libs.junit)

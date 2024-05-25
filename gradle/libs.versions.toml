@@ -25,11 +25,13 @@ droidlibs-compose-android = { module = "com.github.The-Streamliners.DroidLibs:co
 droidlibs-pickers = { module = "com.github.The-Streamliners.DroidLibs:pickers", version.ref = "droidlibs" }
 droidlibs-base = { module = "com.github.The-Streamliners.DroidLibs:base", version.ref = "droidlibs" }
 droidlibs-utils = { module = "com.github.The-Streamliners.DroidLibs:utils", version.ref = "droidlibs" }
+droidlibs-helpers = { module = "com.github.The-Streamliners.DroidLibs:helpers", version.ref = "droidlibs" }
 androidx-datastore-core = { module = "androidx.datastore: datastore-preferences-core", version.ref = "datastore-core"}
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 firebase-storage = { module = "com.google.firebase:firebase-storage" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-ui-auth = { module = "com.firebaseui:firebase-ui-auth", version.ref = "firebase-ui-auth" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson"}

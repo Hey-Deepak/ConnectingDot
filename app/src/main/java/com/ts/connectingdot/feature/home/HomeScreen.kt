@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.streamliners.base.taskState.comp.whenLoaded
 import com.streamliners.compose.comp.CenterText
+import com.streamliners.helpers.NotificationHelper
 import com.ts.connectingdot.domain.model.ext.id
 import com.ts.connectingdot.feature.home.comp.ChannelCard
 import com.ts.connectingdot.ui.Screens
@@ -89,5 +90,7 @@ fun HomeScreen(
 
 
     }
+
+    NotificationHelper.PermissionsSetup()
 
 }

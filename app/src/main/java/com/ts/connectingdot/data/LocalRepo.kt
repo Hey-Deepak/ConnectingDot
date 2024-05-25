@@ -12,10 +12,10 @@ class LocalRepo(
     }
 
     suspend fun getLoggedInUser(): User {
-        return getLoggedInUserNullable()?: error("User not found in Local Database")
+        return getLoggedInUserNullable()?: error("User not found in Local Database 1")
     }
     suspend fun getLoggedInUserNullable(): User? {
-        return dataStoreUtil.getData<User>("user")?: error("User not found in Local Database")
+        return dataStoreUtil.getData<User>("user")
     }
 
     suspend fun isLoggedIn() = getLoggedInUserNullable() != null

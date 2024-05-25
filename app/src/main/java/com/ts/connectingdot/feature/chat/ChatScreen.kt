@@ -95,6 +95,8 @@ fun ChatScreen(
                                 viewModel.sendImage(it.uri)
                             }
                         }
+
+                        // TODO :- FilePath Ext to image uri
                     }
                 }) {
 

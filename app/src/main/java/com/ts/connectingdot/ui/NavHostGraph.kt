@@ -42,7 +42,7 @@ fun MainActivity.NavHostGraph(
         ){
             LoginScreen(
                 navController = navController,
-                koinViewModel()
+                koinBaseViewModel()
             )
         }
 
