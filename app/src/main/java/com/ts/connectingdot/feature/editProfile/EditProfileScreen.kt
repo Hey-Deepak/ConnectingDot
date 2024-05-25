@@ -50,6 +50,7 @@ import com.ts.connectingdot.domain.model.Gender
 import com.ts.connectingdot.domain.model.User
 import com.ts.connectingdot.feature.editProfile.comp.AddImageButton
 import com.ts.connectingdot.feature.editProfile.comp.ProfileImage
+import com.ts.connectingdot.helper.navigateTo
 import com.ts.connectingdot.ui.Screens
 import kotlinx.coroutines.launch
 
@@ -237,7 +238,7 @@ fun EditProfileScreen(
                         viewModel.saveUser(user = user, image) {
                             Toast.makeText(context, "User Profile Created", Toast.LENGTH_LONG)
                                 .show()
-                            navController.navigate(Screens.Home.route)
+                            navController.navigateTo(Screens.Home.route, Screens.EditProfile.format())
                         }
 
 

@@ -13,11 +13,12 @@ import androidx.navigation.NavController
 import com.streamliners.base.taskState.comp.whenLoaded
 import com.streamliners.compose.android.comp.appBar.TitleBarScaffold
 import com.ts.connectingdot.domain.model.ext.id
+import com.ts.connectingdot.helper.navigateTo
 import com.ts.connectingdot.ui.Screens
 import com.ts.connectingdot.ui.comp.UserCard
 
 @Composable
-fun NewChat(
+fun NewChatScreen(
     navController: NavController,
     viewModel: NewChatViewModel,
 ) {
@@ -44,8 +45,10 @@ fun NewChat(
                         onClick = {
                             viewModel.onUserSelected(
                                 otherUserId = user.id(),
-                                onChannelReady = {
-                                    navController.navigate(Screens.Chat(channelId = it).route)
+                                onChannelReady = { channelId ->
+                                    navController.navigateTo(
+                                        Screens.Chat(channelId = channelId),
+                                        Screens.NewChat)
                                 }
                             )
                         })

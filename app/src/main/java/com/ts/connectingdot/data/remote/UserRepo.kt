@@ -9,16 +9,17 @@ import kotlinx.coroutines.tasks.await
 
 class UserRepo {
 
-    suspend fun saveUser(user: User){
+    suspend fun saveUser(user: User): User {
 
-        Firebase.firestore
-            .userColl()
-            .add(user)
-            .await()
+        val collRef = Firebase.firestore.userColl()
+        val id = collRef.document().id
 
+        collRef.document(id).set(user).await()
+
+        return user.copy(id = id)
     }
 
-    suspend fun getUserWithEmail(email: String):User?{
+    suspend fun getUserWithEmail(email: String): User? {
         return Firebase.firestore
             .userColl()
             .whereEqualTo(User::email.name, email)
@@ -28,7 +29,7 @@ class UserRepo {
             .firstOrNull()
     }
 
-    suspend fun getAllUsers():List<User>{
+    suspend fun getAllUsers(): List<User> {
         return Firebase.firestore
             .userColl()
             .get()

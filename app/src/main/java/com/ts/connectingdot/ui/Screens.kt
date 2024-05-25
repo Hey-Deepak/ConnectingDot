@@ -28,6 +28,6 @@ sealed class Screens(
     }
 
     data object Home: Screens("Home")
-    data object NewChat: Screens("NewChat")
+    data object NewChat: Screens("NewChatScreen")
 
 }

@@ -30,10 +30,10 @@ class EditProfileViewModel @Inject constructor(
         execute(showLoadingDialog = false) {
 
             saveProfileTask.load {
-                val updatedUser = user.copy(
+                var updatedUser = user.copy(
                     profileImageUrl = uploadProfileImage(user.email, image.value)
                 )
-                userRepo.saveUser(user = updatedUser)
+                updatedUser = userRepo.saveUser(user = updatedUser)
                 localRepo.onLoggedIn(updatedUser)
                 executeOnMain {
                     onSuccess()

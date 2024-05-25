@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.ts.connectingdot.data.LocalRepo
 import com.ts.connectingdot.data.remote.UserRepo
+import com.ts.connectingdot.helper.navigateTo
 import com.ts.connectingdot.ui.Screens
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,9 +23,8 @@ class LoginViewModel @Inject constructor(
                     localRepo.onLoggedIn(user)
                     navController.navigate(Screens.Home.route)
             } else {
-                navController.navigate(
-                    Screens.EditProfile(email).route
-                    //Screens.Login.route
+                navController.navigateTo(
+                    Screens.EditProfile(email), Screens.Login
                 )
             }
 

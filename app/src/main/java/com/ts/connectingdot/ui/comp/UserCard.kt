@@ -42,7 +42,7 @@ fun UserCard(
 
             AsyncImage(
                 modifier = Modifier
-                    .size(24.dp)
+                    .size(64.dp)
                     .clip(CircleShape),
                 uri = user.profileImageUrl ?: userInitialBasedProfileProfile(user.name),
                 placeHolder = painterResource(id = R.drawable.ic_person)
