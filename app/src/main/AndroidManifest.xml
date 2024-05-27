@@ -37,7 +37,7 @@
         </provider>
 
         <service
-            android:name=".helper.ChatAppFCMService"
+            android:name=".helper.fcm.ChatAppFCMService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
