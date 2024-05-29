@@ -16,13 +16,15 @@ import com.ts.connectingdot.domain.model.Channel
 import com.ts.connectingdot.domain.model.Message
 import com.ts.connectingdot.domain.model.User
 import com.ts.connectingdot.domain.model.ext.id
+import com.ts.connectingdot.domain.usecase.NewMessageNotifier
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class ChatViewModel(
     private val channelRepo: ChannelRepo,
     private val localRepo: LocalRepo,
-    private val storageRepo: StorageRepo
+    private val storageRepo: StorageRepo,
+    private val newMessageNotifier: NewMessageNotifier
 ): BaseViewModel() {
 
     sealed class ChatListItem{
@@ -109,6 +111,7 @@ class ChatViewModel(
         )
         execute {
             channelRepo.sendMessage(data.value().channel.id(), message)
+            newMessageNotifier.notify()
             onSuccess()
         }
     }

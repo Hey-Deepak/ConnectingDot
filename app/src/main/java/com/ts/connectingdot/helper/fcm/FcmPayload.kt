@@ -17,29 +17,27 @@ class FcmMessage private constructor(
             topic: String,
             notification: NotificationPayload?,
             android: AndroidPayload?,
-            data: Map<String, String>?) = FcmPayload(
-                message = FcmMessage(
+            data: Map<String, String>?) = FcmMessage(
                     topic,
                     token = null,
                     notification,
                     data,
                     android
                 )
-            )
+
 
         fun forToken(
             token: String,
             notification: NotificationPayload?,
             android: AndroidPayload?,
-            data: Map<String, String>?) = FcmPayload(
-                message = FcmMessage(
+            data: Map<String, String>?) = FcmMessage(
                     topic = null,
                     token = token,
                     notification,
                     data,
                     android
                 )
-            )
+
     }
 
 }

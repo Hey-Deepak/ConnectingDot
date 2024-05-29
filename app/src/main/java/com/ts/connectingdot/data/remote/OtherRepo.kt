@@ -6,7 +6,7 @@ import com.ts.connectingdot.data.remote.FirestoreCollection.otherColl
 import com.ts.connectingdot.domain.model.Secret
 import kotlinx.coroutines.tasks.await
 
-class SecretRepo {
+class OtherRepo {
 
     suspend fun getServiceAccountJson(): String{
         return Firebase.firestore.otherColl()
