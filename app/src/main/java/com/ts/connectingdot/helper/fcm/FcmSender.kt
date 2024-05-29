@@ -1,5 +1,6 @@
 package com.ts.connectingdot.helper.fcm
 
+import com.google.auth.oauth2.GoogleCredentials
 import com.google.gson.Gson
 import io.ktor.client.HttpClient
 import io.ktor.client.request.header
@@ -30,15 +31,15 @@ class FcmSender (
         serviceAccountJson: String
     ): String {
 
-        val googleCredential = GoogleCredential
+        val googleCredentials = GoogleCredentials
             .fromStream(
                 ByteArrayInputStream(serviceAccountJson.toByteArray())
             )
             .createScoped(
                 listOf("https://www.googleapis.com/auth/firebase.messaging")
             )
-        googleCredential.refesh()
-        return googleCredential.accessToken.tokenValue
+        googleCredentials.refresh()
+        return googleCredentials.accessToken.tokenValue
     }
 
 }

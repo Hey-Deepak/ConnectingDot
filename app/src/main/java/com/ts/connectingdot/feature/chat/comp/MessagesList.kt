@@ -24,8 +24,7 @@ fun MessagesList(
 
     LazyColumn(
         modifier = Modifier
-            .fillMaxSize()
-            .width(0.),
+            .fillMaxSize(),
         contentPadding = PaddingValues(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
