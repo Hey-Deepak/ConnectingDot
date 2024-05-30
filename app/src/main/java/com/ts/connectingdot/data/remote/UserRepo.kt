@@ -28,6 +28,15 @@ class UserRepo {
             .toObjects(User::class.java)
             .firstOrNull()
     }
+    suspend fun getUserById(userId: String): User {
+        return Firebase.firestore
+            .userColl()
+            .document(userId)
+            .get()
+            .await()
+            .toObject(User::class.java)
+            ?: error("No user found with Id = $userId")
+    }
 
     suspend fun getAllUsers(): List<User> {
         return Firebase.firestore

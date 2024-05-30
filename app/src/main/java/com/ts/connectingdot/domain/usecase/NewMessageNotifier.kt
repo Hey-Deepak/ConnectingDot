@@ -1,6 +1,7 @@
 package com.ts.connectingdot.domain.usecase
 
 import com.ts.connectingdot.data.remote.OtherRepo
+import com.ts.connectingdot.data.remote.UserRepo
 import com.ts.connectingdot.helper.fcm.AndroidPayload
 import com.ts.connectingdot.helper.fcm.FcmMessage
 import com.ts.connectingdot.helper.fcm.FcmPayload
@@ -9,17 +10,24 @@ import com.ts.connectingdot.helper.fcm.NotificationPayload
 
 class NewMessageNotifier(
     private val otherRepo: OtherRepo,
-    private val fcmSender: FcmSender
+    private val fcmSender: FcmSender,
+    private val userRepo: UserRepo
 ) {
 
-    suspend fun notify(){
+    suspend fun notify(
+        senderName: String,
+        userId: String,
+        message: String
+    ){
+        val token = userRepo.getUserById(userId).fcmToken ?: return
         val svcAcJson = otherRepo.getServiceAccountJson()
+
         val payload = FcmPayload(
-            FcmMessage.forTopic(
-                topic = "general",
+            FcmMessage.forToken(
+                token = token,
                 notification = NotificationPayload(
-                    title = "Sample Notification",
-                    body = "Android Studio se aa Raha hai"
+                    title = "New Message",
+                    body = "$senderName : $message"
                 ),
                 android = AndroidPayload(
                     priority = "high"

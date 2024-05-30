@@ -28,7 +28,7 @@ val appModule = module {
 
     single { FcmSender(get()) }
 
-    single { NewMessageNotifier(get(), get()) }
+    single { NewMessageNotifier(get(), get(), get()) }
 
     single {
         HttpClient(CIO) {
