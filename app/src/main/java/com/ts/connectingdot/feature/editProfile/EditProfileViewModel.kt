@@ -2,8 +2,8 @@ package com.ts.connectingdot.feature.editProfile
 
 import androidx.compose.runtime.MutableState
 import androidx.core.net.toUri
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.google.firebase.Firebase
+import com.google.firebase.messaging.messaging
 import com.streamliners.base.BaseViewModel
 import com.streamliners.base.ext.execute
 import com.streamliners.base.ext.executeOnMain
@@ -14,7 +14,7 @@ import com.ts.connectingdot.data.LocalRepo
 import com.ts.connectingdot.data.remote.StorageRepo
 import com.ts.connectingdot.data.remote.UserRepo
 import com.ts.connectingdot.domain.model.User
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class EditProfileViewModel @Inject constructor(
@@ -30,11 +30,16 @@ class EditProfileViewModel @Inject constructor(
         execute(showLoadingDialog = false) {
 
             saveProfileTask.load {
+
+                val token = Firebase.messaging.token.await()
+
                 var updatedUser = user.copy(
-                    profileImageUrl = uploadProfileImage(user.email, image.value)
+                    profileImageUrl = uploadProfileImage(user.email, image.value),
+                    fcmToken = token
                 )
+
                 updatedUser = userRepo.saveUser(user = updatedUser)
-                localRepo.onLoggedIn(updatedUser)
+                localRepo.upsertCurrentUser(updatedUser)
                 executeOnMain {
                     onSuccess()
                 }
