@@ -37,4 +37,11 @@ class UserRepo {
             .toObjects(User::class.java)
     }
 
+    suspend fun updateFcmToken(token: String, userId: String){
+        Firebase.firestore.userColl()
+            .document(userId)
+            .update(User::fcmToken.name, token)
+            .await()
+
+    }
 }

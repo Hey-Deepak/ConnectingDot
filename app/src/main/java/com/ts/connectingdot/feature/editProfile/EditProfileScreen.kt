@@ -232,7 +232,8 @@ fun EditProfileScreen(
                             profileImageUrl = null,
                             bio = bioInput.value(),
                             gender = gender,
-                            dob = dob.value
+                            dob = dob.value,
+                            fcmToken = null
                         )
 
                         viewModel.saveUser(user = user, image) {
