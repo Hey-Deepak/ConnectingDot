@@ -16,7 +16,7 @@ import com.ts.connectingdot.ui.comp.general.AsyncImage
 @Composable
 fun ProfileImage(
     modifier: Modifier,
-    pickedMedia: PickedMedia,
+    pickedMedia: String,
     onClick: () -> Unit,
 ) {
 
@@ -24,7 +24,7 @@ fun ProfileImage(
         modifier = modifier.size(100.dp)
             .clip(CircleShape)
             .clickable(onClick = onClick),
-        uri = pickedMedia.uri
+        uri = pickedMedia
     )
 
 }

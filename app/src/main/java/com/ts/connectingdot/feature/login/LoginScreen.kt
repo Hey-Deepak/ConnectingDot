@@ -48,7 +48,6 @@ fun LoginScreen(
 
             SignInWithGoogleButton(
                 onSuccess = {
-                    Log.e("FB", it.email.toString())
 
                     val email = it.email ?: error("Email Not Found")
 

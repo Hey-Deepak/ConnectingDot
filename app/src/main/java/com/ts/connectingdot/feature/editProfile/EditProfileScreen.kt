@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
@@ -27,12 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.streamliners.base.ext.showToast
 import com.streamliners.base.taskState.comp.TaskLoadingButton
-import com.streamliners.base.taskState.comp.whenLoaded
 import com.streamliners.compose.comp.select.RadioGroup
 import com.streamliners.compose.comp.textInput.TextInputLayout
-import com.streamliners.compose.comp.textInput.config.InputConfig
-import com.streamliners.compose.comp.textInput.config.text
 import com.streamliners.compose.comp.textInput.state.TextInputState
 import com.streamliners.compose.comp.textInput.state.allHaveValidInputs
 import com.streamliners.compose.comp.textInput.state.value
@@ -42,9 +39,7 @@ import com.streamliners.pickers.media.FromGalleryType
 import com.streamliners.pickers.media.MediaPickerDialog
 import com.streamliners.pickers.media.MediaPickerDialogState
 import com.streamliners.pickers.media.MediaType
-import com.streamliners.pickers.media.PickedMedia
 import com.streamliners.pickers.media.rememberMediaPickerDialogState
-import com.streamliners.utils.DateTimeUtils
 import com.streamliners.utils.DateTimeUtils.Format.DATE_MONTH_YEAR_2
 import com.ts.connectingdot.domain.model.Gender
 import com.ts.connectingdot.domain.model.User
@@ -75,42 +70,15 @@ fun EditProfileScreen(
         val context = LocalContext.current
         val scope = rememberCoroutineScope()
 
-        val image = remember {
-            mutableStateOf<PickedMedia?>(null)
-        }
-
-        val nameInput = remember {
-            mutableStateOf(
-                TextInputState(
-                    label = "Name",
-                    inputConfig = InputConfig.text {
-                        minLength = 5
-                        maxLength = 30
-                    }
-                )
-            )
-        }
-
-        val bioInput = remember {
-            mutableStateOf(
-                TextInputState(
-                    label = "Bio",
-                    inputConfig = InputConfig.text {
-                        minLength = 3
-                        maxLength = 100
-                    }
-                )
-            )
-        }
-
-        val gender = remember { mutableStateOf<Gender?>(null) }
         val genderError = remember { mutableStateOf(false) }
-        val dob = remember { mutableStateOf<String?>(null) }
+        val image = viewModel.image.value
 
-        LaunchedEffect(key1 = gender.value) {
-            if (gender.value != null) genderError.value = false
+        LaunchedEffect(key1 = viewModel.gender.value) {
+            if (viewModel.gender.value != null) genderError.value = false
         }
-
+        LaunchedEffect(key1 = Unit) {
+            viewModel.loadProfile()
+        }
 
         Column(
             modifier = Modifier
@@ -121,7 +89,6 @@ fun EditProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-
             val initImagePicker = {
                 mediaPickerDialogState.value = MediaPickerDialogState.Visible(
                     type = MediaType.Image,
@@ -131,28 +98,54 @@ fun EditProfileScreen(
                     scope.launch {
                         val list = getList()
                         list.firstOrNull()?.let {
-                            image.value = it
+                            viewModel.image.value = ImageState.New(it)
                         }
                     }
                 }
             }
 
-            image.value?.let {
-                ProfileImage(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    pickedMedia = it,
-                    onClick = initImagePicker
-                )
-            } ?: run {
-                AddImageButton(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    onClick = initImagePicker
-                )
+            when(image){
+                is ImageState.New -> {
+
+
+                    viewModel.image.value?.let {
+                        image.media?.let { media ->
+                            ProfileImage(
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
+                                pickedMedia = media.uri,
+                                onClick = initImagePicker
+                            )
+                        }
+                    } ?: run {
+                        AddImageButton(
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            onClick = initImagePicker
+                        )
+                    }
+                }
+                is ImageState.Url -> {
+                    image.url?.let { url ->
+                        ProfileImage(
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            pickedMedia = url,
+                            onClick = {}
+                        )
+                    }
+                }
+                null -> {
+                    viewModel.showToast("No Image Found")
+                    AddImageButton(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        onClick = initImagePicker
+                    )
+                }
             }
 
 
 
-            TextInputLayout(state = nameInput)
+
+
+            TextInputLayout(state = viewModel.nameInput)
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -162,7 +155,7 @@ fun EditProfileScreen(
                 label = { Text(text = "Email") }
             )
 
-            TextInputLayout(state = bioInput)
+            TextInputLayout(state = viewModel.bioInput)
 
             Card {
                 Column(
@@ -175,7 +168,7 @@ fun EditProfileScreen(
                 ) {
                     RadioGroup(
                         title = "Gender",
-                        state = gender,
+                        state = viewModel.gender,
                         options = Gender.entries.toList(),
                         labelExtractor = { it.name }
                     )
@@ -198,14 +191,14 @@ fun EditProfileScreen(
                         showDatePicker(
                             DatePickerDialog.Params(
                                 format = DATE_MONTH_YEAR_2,
-                                prefill = dob.value,
+                                prefill = viewModel.dob.value,
                                 onPicked = { date ->
-                                    dob.value = date
+                                    viewModel.dob.value = date
                                 }
                             )
                         )
                     },
-                value = dob.value ?: "",
+                value = viewModel.dob.value ?: "",
                 onValueChange = {},
                 readOnly = true,
                 enabled = false,
@@ -219,24 +212,40 @@ fun EditProfileScreen(
 
                 if (
                     TextInputState.allHaveValidInputs(
-                        nameInput, bioInput
+                        viewModel.nameInput, viewModel.bioInput
                     )
                 ) {
 
-                    gender.value?.let { gender ->
+                    viewModel.gender.value?.let { gender ->
                         Toast.makeText(context, "Sahi Jawab", Toast.LENGTH_LONG).show()
 
-                        val user = User(
-                            name = nameInput.value(),
-                            email = email,
-                            profileImageUrl = null,
-                            bio = bioInput.value(),
-                            gender = gender,
-                            dob = dob.value,
-                            fcmToken = null
-                        )
+                        val user: User
+                        if (viewModel.image.value != null){
+                            val imageOld = viewModel.image.value as ImageState.Url
+                            user = User(
+                                id = viewModel.id.value,
+                                name = viewModel.nameInput.value(),
+                                email = email,
+                                profileImageUrl = imageOld.url,
+                                bio = viewModel.bioInput.value(),
+                                gender = gender,
+                                dob = viewModel.dob.value,
+                                fcmToken = null
+                            )
+                        } else {
+                            user = User(
+                                id = viewModel.id.value,
+                                name = viewModel.nameInput.value(),
+                                email = email,
+                                profileImageUrl = null,
+                                dob = viewModel.dob.value,
+                                bio = viewModel.bioInput.value(),
+                                gender = gender,
+                                fcmToken = null
+                            )
+                        }
 
-                        viewModel.saveUser(user = user, image) {
+                        viewModel.saveUser(user = user) {
                             Toast.makeText(context, "User Profile Created", Toast.LENGTH_LONG)
                                 .show()
                             navController.navigateTo(Screens.Home.route, Screens.EditProfile.format())
@@ -246,7 +255,7 @@ fun EditProfileScreen(
                     }
                 }
 
-                if (gender.value == null) {
+                if (viewModel.gender.value == null) {
                     genderError.value = true
                 }
 

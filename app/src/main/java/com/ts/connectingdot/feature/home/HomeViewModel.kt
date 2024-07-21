@@ -45,8 +45,6 @@ class HomeViewModel(
                     }
                 }
 
-            Log.e("1234", channels.toList().toString())
-
 
             channelsState.update(
                 channels
