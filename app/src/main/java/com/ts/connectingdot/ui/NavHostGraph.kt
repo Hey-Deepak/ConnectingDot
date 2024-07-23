@@ -14,6 +14,7 @@ import com.ts.connectingdot.feature.login.LoginScreen
 import com.ts.connectingdot.feature.editProfile.EditProfileScreen
 import com.ts.connectingdot.feature.home.HomeScreen
 import com.ts.connectingdot.feature.newChat.NewChatScreen
+import com.ts.connectingdot.feature.newGroupChat.NewGroupChatScreen
 import com.ts.connectingdot.feature.splash.SplashScreen
 import org.koin.androidx.compose.koinViewModel
 
@@ -80,6 +81,15 @@ fun MainActivity.NavHostGraph(
             route = Screens.NewChat.route
         ){
             NewChatScreen(
+                navController,
+                koinBaseViewModel()
+            )
+        }
+        // New Group Screen
+        composable(
+            route = Screens.NewGroupChat.route
+        ){
+            NewGroupChatScreen(
                 navController,
                 koinBaseViewModel()
             )

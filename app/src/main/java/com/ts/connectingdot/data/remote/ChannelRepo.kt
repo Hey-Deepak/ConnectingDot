@@ -3,6 +3,7 @@ package com.ts.connectingdot.data.remote
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
+import com.streamliners.pickers.media.PickedMedia
 import com.ts.connectingdot.data.remote.FirestoreCollection.channelColl
 import com.ts.connectingdot.domain.model.Channel
 import com.ts.connectingdot.domain.model.Message
@@ -12,7 +13,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlin.concurrent.thread
 
 class ChannelRepo {
 
@@ -58,10 +58,35 @@ class ChannelRepo {
         return id
     }
 
+    suspend fun createGroupChannel(
+        currentUserId: String,
+        name: String,
+        description: String?,
+        groupImageUrl: String?,
+        members: List<String>,
+        ): String {
+        val collRef = Firebase.firestore.channelColl()
+        val id = collRef.document().id
+
+        collRef.document(id)
+            .set(
+                Channel(
+                    id = null,
+                    imageUrl = groupImageUrl,
+                    type = Channel.Type.Group,
+                    description = description,
+                    name = name,
+                    members = members + currentUserId,
+                    messages = emptyList()
+                )
+            ).await()
+
+        return id
+    }
+
     suspend fun getAllChannelsOf(userId: String): List<Channel> {
 
         return Firebase.firestore.channelColl()
-            .whereEqualTo(Channel::type.name, Channel.Type.OneToOne)
             .whereArrayContains(Channel::members.name, userId)
             .get()
             .await()

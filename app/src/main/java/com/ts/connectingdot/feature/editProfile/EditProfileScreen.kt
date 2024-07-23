@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -47,10 +48,12 @@ import com.streamliners.pickers.media.rememberMediaPickerDialogState
 import com.streamliners.utils.DateTimeUtils.Format.Companion.DATE_MONTH_YEAR_2
 import com.ts.connectingdot.domain.model.Gender
 import com.ts.connectingdot.domain.model.User
-import com.ts.connectingdot.feature.editProfile.comp.AddImageButton
+import com.ts.connectingdot.ui.comp.AddImageButton
 import com.ts.connectingdot.feature.editProfile.comp.ProfileImage
+import com.ts.connectingdot.helper.launchMediaPickerDialogForProfileImage
 import com.ts.connectingdot.helper.navigateTo
 import com.ts.connectingdot.ui.Screens
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -121,38 +124,21 @@ fun EditProfileScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
 
-            val initImagePicker = {
-                mediaPickerDialogState.value = MediaPickerDialogState.ShowMediaPicker(
-                    type = MediaType.Image,
-                    allowMultiple = false,
-                    fromGalleryType = FromGalleryType.VisualMediaPicker,
-                    cropParams = MediaPickerCropParams.Enabled(
-                        showAspectRatioSelectionButton = false,
-                        showShapeCropButton = false,
-                        lockAspectRatio = AspectRatio(
-                            1,1
-                        )
-                    )
-                ) { getList ->
-                    scope.launch {
-                        val list = getList()
-                        list.firstOrNull()?.let {
-                            image.value = it
-                        }
-                    }
-                }
-            }
 
             image.value?.let {
                 ProfileImage(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     pickedMedia = it,
-                    onClick = initImagePicker
+                    onClick = {
+                        launchMediaPickerDialogForProfileImage(mediaPickerDialogState, scope, image)
+                    }
                 )
             } ?: run {
                 AddImageButton(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    onClick = initImagePicker
+                    onClick = {
+                        launchMediaPickerDialogForProfileImage(mediaPickerDialogState, scope, image)
+                    }
                 )
             }
 
@@ -268,3 +254,5 @@ fun EditProfileScreen(
     )
 
 }
+
+

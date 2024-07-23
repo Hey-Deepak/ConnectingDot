@@ -1,4 +1,4 @@
-package com.ts.connectingdot.feature.editProfile.comp
+package com.ts.connectingdot.ui.comp
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

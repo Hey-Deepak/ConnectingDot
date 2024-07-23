@@ -29,5 +29,6 @@ sealed class Screens(
 
     data object Home: Screens("Home")
     data object NewChat: Screens("NewChatScreen")
+    data object NewGroupChat: Screens("NewGroupChatScreen")
 
 }
