@@ -1,6 +1,5 @@
 package com.ts.connectingdot.feature.chat
 
-import android.icu.util.TimeZone.SystemTimeZoneType
 import androidx.core.net.toUri
 import com.streamliners.base.BaseViewModel
 import com.streamliners.base.ext.execute
@@ -22,23 +21,25 @@ import kotlinx.coroutines.launch
 
 class ChatViewModel(
     private val channelRepo: ChannelRepo,
+    private val userRepo: UserRepo,
     private val localRepo: LocalRepo,
     private val storageRepo: StorageRepo,
     private val newMessageNotifier: NewMessageNotifier
-): BaseViewModel() {
+) : BaseViewModel() {
 
-    sealed class ChatListItem{
+    sealed class ChatListItem {
         class ReceivedMessage(
             val time: String,
+            val senderName: String?,
             val message: Message
-        ): ChatListItem()
+        ) : ChatListItem()
 
-        class Date(val date: String): ChatListItem()
+        class Date(val date: String) : ChatListItem()
 
         class SendMessage(
             val time: String,
             val message: Message
-        ): ChatListItem()
+        ) : ChatListItem()
     }
 
     class Data(
@@ -51,19 +52,21 @@ class ChatViewModel(
 
     fun start(
         channelId: String
-    ){
+    ) {
 
         execute {
             val user = localRepo.getLoggedInUser()
             launch {
+                // TODO: Fetch list only if group channel
+                val users = userRepo.getAllUsers()
                 channelRepo.subscribeToChannel(channelId).collectLatest {
 
                     val channel = channelRepo.getChannel(channelId)
                     data.update(
                         Data(
-                            channel,
-                            user,
-                            createChatListItem(channel, user.id())
+                            channel = channel,
+                            user = user,
+                            chatListItems = createChatListItem(channel, user.id(), users)
                         )
                     )
                 }
@@ -73,7 +76,11 @@ class ChatViewModel(
 
     }
 
-    fun createChatListItem(channel: Channel, currentUserId: String): List<ChatListItem> {
+    fun createChatListItem(
+        channel: Channel,
+        currentUserId: String,
+        users: List<User>
+    ): List<ChatListItem> {
         val chatItems = mutableListOf<ChatListItem>()
         var prevDateString = ""
         for (message in channel.messages) {
@@ -81,7 +88,7 @@ class ChatViewModel(
                 DateTimeUtils.Format.DATE_MONTH_YEAR_1,
                 message.time.toDate().time,
 
-            )
+                )
 
             if (prevDateString != dateString) {
                 chatItems.add(ChatListItem.Date(dateString))
@@ -91,7 +98,20 @@ class ChatViewModel(
             val chatListItem = if (message.sender == currentUserId) {
                 ChatListItem.SendMessage(message.time.toString(), message)
             } else {
-                ChatListItem.ReceivedMessage(message.time.toString(), message)
+
+                val name = if(channel.type == Channel.Type.Group){
+                    users.find { it.id == message.sender }?.name
+                        ?: error("User with id ${message.sender} not found!")
+                } else null
+
+                ChatListItem.ReceivedMessage(
+                    time = DateTimeUtils.formatTime(
+                        DateTimeUtils.Format.HOUR_MIN_12,
+                        message.time.toDate().time
+                    ),
+                    message = message,
+                    senderName = name
+                )
 
             }
             chatItems.add(chatListItem)
@@ -103,7 +123,7 @@ class ChatViewModel(
     fun sendMessage(
         messageStr: String,
         onSuccess: () -> Unit,
-    ){
+    ) {
         val message = Message(
             sender = data.value().user.id(),
             message = messageStr,
@@ -136,7 +156,7 @@ class ChatViewModel(
 
     }
 
-    fun sendImage(uri: String){
+    fun sendImage(uri: String) {
 
 
         execute {

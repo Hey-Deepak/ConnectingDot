@@ -43,7 +43,11 @@ fun MessagesList(
                         Text(text = chatListItem.date)
                     }
                     is ChatListItem.ReceivedMessage -> {
-                       MessageCard(message = chatListItem.message)
+                       MessageCard(
+                           message = chatListItem.message,
+                           senderName = chatListItem.senderName
+
+                       )
                     }
                     is ChatListItem.SendMessage -> {
                         MessageCard(message = chatListItem.message)

@@ -26,64 +26,77 @@ import com.ts.connectingdot.ui.comp.general.AsyncImage
 
 @Composable
 fun MessageCard(
-    message: Message
+    message: Message,
+    senderName: String? = null
 
 ) {
 
-    Card(
+    Column {
 
-    ) {
-
-        Column(
-            modifier = Modifier
-                .width(IntrinsicSize.Max)
-                .padding(horizontal = 12.dp, vertical = 8.dp),
-        ) {
-
-            message.mediaUrl?.let {
-                AsyncImage(
-                    modifier = Modifier
-                        .padding(top = 4.dp)
-                        .widthIn(
-                        min = 100.dp,
-                        max = 220.dp
-                    ),
-                    uri = it,
-                    contentScale = ContentScale.FillWidth
-                )
-            }
-
-            Row(modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Text(
-                    text = message.message,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = Color.Black,
-                    modifier = Modifier.weight(0.5f)
-                )
-
-                val formattedTime = remember {
-                    derivedStateOf {
-                        DateTimeUtils.formatTime(
-                            HOUR_MIN_12,
-                            message.time.toDate().time
-                        )
-                    }
-                }
-
-                Text(
-                    text = formattedTime.value,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.DarkGray,
-                )
-
-            }
+        senderName?.let { name ->
+            Text(
+                modifier = Modifier.padding(bottom = 4.dp),
+                text = name,
+                style = MaterialTheme.typography.bodyMedium)
         }
 
+        Card {
 
+            Column(
+                modifier = Modifier
+                    .width(IntrinsicSize.Max)
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+            ) {
+
+                message.mediaUrl?.let {
+                    AsyncImage(
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .widthIn(
+                                min = 100.dp,
+                                max = 220.dp
+                            ),
+                        uri = it,
+                        contentScale = ContentScale.FillWidth
+                    )
+                }
+
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        text = message.message,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color.Black,
+                        modifier = Modifier.weight(0.5f)
+                    )
+
+                    val formattedTime = remember {
+                        derivedStateOf {
+                            DateTimeUtils.formatTime(
+                                HOUR_MIN_12,
+                                message.time.toDate().time
+                            )
+                        }
+                    }
+
+                    Text(
+                        text = formattedTime.value,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.DarkGray,
+                    )
+
+                }
+            }
+
+
+        }
     }
+
+
 
 }
