@@ -141,19 +141,41 @@ class ChatViewModel(
         val user = data.value().user
         val channel = data.value().channel
         if (channel.type == Channel.Type.OneToOne) {
-            val otherUserId =
-                channel.members.find { it != user.id() } ?: error("OtherUserId not found")
-            execute(false) {
-                newMessageNotifier.notify(
-                    senderName = data.value().user.name,
-                    userId = otherUserId,
-                    message = message
-                )
-            }
+            notifySingleUserUsingToken(channel, user, message)
 
+        } else {
+            notifyAllOtherUsersUsingTopic(channel, message)
         }
 
 
+    }
+
+    private fun notifyAllOtherUsersUsingTopic(channel: Channel, message: String) {
+        // TODO: Send to all users except current user (silently receive)
+        execute(false) {
+            newMessageNotifier.notifyMultipleUserUsingTopic(
+                senderName = data.value().user.name,
+                topic = channel.id(),
+                message = message
+            )
+        }
+
+    }
+
+    private fun notifySingleUserUsingToken(
+        channel: Channel,
+        user: User,
+        message: String
+    ) {
+        val otherUserId =
+            channel.members.find { it != user.id() } ?: error("OtherUserId not found")
+        execute(false) {
+            newMessageNotifier.notifySingleUser(
+                senderName = data.value().user.name,
+                userId = otherUserId,
+                message = message
+            )
+        }
     }
 
     fun sendImage(uri: String) {

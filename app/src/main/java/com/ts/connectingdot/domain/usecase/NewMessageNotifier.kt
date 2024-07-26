@@ -14,14 +14,12 @@ class NewMessageNotifier(
     private val userRepo: UserRepo
 ) {
 
-    suspend fun notify(
+    suspend fun notifySingleUser(
         senderName: String,
         userId: String,
         message: String
     ){
         val token = userRepo.getUserById(userId).fcmToken ?: return
-        val svcAcJson = otherRepo.getServiceAccountJson()
-
         val payload = FcmPayload(
             FcmMessage.forToken(
                 token = token,
@@ -35,7 +33,34 @@ class NewMessageNotifier(
                 data = null
             )
         )
+        sendNotification(payload)
+    }
 
+    suspend fun notifyMultipleUserUsingTopic(
+        senderName: String,
+        topic: String,
+        message: String
+    ){
+
+        val payload = FcmPayload(
+            FcmMessage.forTopic(
+                topic = topic,
+                notification = NotificationPayload(
+                    title = "New Message",
+                    body = "$senderName : $message"
+                ),
+                android = AndroidPayload(
+                    priority = "high"
+                ),
+                data = null
+            )
+        )
+        sendNotification(payload)
+    }
+
+    private suspend fun sendNotification(payload: FcmPayload) {
+
+        val svcAcJson = otherRepo.getServiceAccountJson()
         fcmSender.send(
             fcmPayload = payload,
             serviceAccountJson = svcAcJson
