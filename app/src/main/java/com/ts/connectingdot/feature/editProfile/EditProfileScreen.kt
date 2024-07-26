@@ -16,18 +16,18 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.mr0xf00.easycrop.AspectRatio
 import com.streamliners.base.taskState.comp.TaskLoadingButton
 import com.streamliners.compose.comp.select.RadioGroup
 import com.streamliners.compose.comp.textInput.TextInputLayout
@@ -35,33 +35,29 @@ import com.streamliners.compose.comp.textInput.config.InputConfig
 import com.streamliners.compose.comp.textInput.config.text
 import com.streamliners.compose.comp.textInput.state.TextInputState
 import com.streamliners.compose.comp.textInput.state.allHaveValidInputs
+import com.streamliners.compose.comp.textInput.state.update
 import com.streamliners.compose.comp.textInput.state.value
 import com.streamliners.pickers.date.DatePickerDialog
 import com.streamliners.pickers.date.ShowDatePicker
-import com.streamliners.pickers.media.FromGalleryType
-import com.streamliners.pickers.media.MediaPickerCropParams
 import com.streamliners.pickers.media.MediaPickerDialog
-import com.streamliners.pickers.media.MediaPickerDialogState
-import com.streamliners.pickers.media.MediaType
-import com.streamliners.pickers.media.PickedMedia
 import com.streamliners.pickers.media.rememberMediaPickerDialogState
 import com.streamliners.utils.DateTimeUtils.Format.Companion.DATE_MONTH_YEAR_2
 import com.ts.connectingdot.domain.model.Gender
 import com.ts.connectingdot.domain.model.User
+import com.ts.connectingdot.feature.editProfile.comp.ImageState
 import com.ts.connectingdot.ui.comp.AddImageButton
 import com.ts.connectingdot.feature.editProfile.comp.ProfileImage
 import com.ts.connectingdot.helper.launchMediaPickerDialogForProfileImage
 import com.ts.connectingdot.helper.navigateTo
 import com.ts.connectingdot.ui.Screens
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import com.ts.connectingdot.ui.theme.Primary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileScreen(
     navController: NavController,
     viewModel: EditProfileViewModel,
-    email: String,
+    email: String?,
     showDatePicker: ShowDatePicker
 ) {
 
@@ -70,15 +66,20 @@ fun EditProfileScreen(
     Scaffold(
         modifier = Modifier.imePadding(),
         topBar = {
-            TopAppBar(title = { Text(text = "EditProfile") })
+            TopAppBar(
+                title = { Text(text = "EditProfile") },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Primary,
+                    titleContentColor = Color.White
+                ))
         }
     ) { paddingValues ->
 
         val context = LocalContext.current
         val scope = rememberCoroutineScope()
 
-        val image = remember {
-            mutableStateOf<PickedMedia?>(null)
+        val imageState = remember {
+            mutableStateOf<ImageState>(ImageState.Empty)
         }
 
         val nameInput = remember {
@@ -113,6 +114,28 @@ fun EditProfileScreen(
             if (gender.value != null) genderError.value = false
         }
 
+        // Prefill value based on current user object
+        LaunchedEffect(key1 = Unit) {
+            viewModel.getCurrentUser(
+                onSuccess = { user ->
+                    user.run {
+                        nameInput.update(name)
+                        bioInput.update(bio)
+                    }
+                    gender.value = user.gender
+                    dob.value = user.dob
+
+                    user.profileImageUrl?.let { url ->
+                        imageState.value = ImageState.Exists(url)
+                    }
+                    viewModel.email.value = user.email
+                },
+                onNotFound = {
+                    viewModel.email.value = email ?: error("Email arg  not found")
+                }
+            )
+        }
+
 
         Column(
             modifier = Modifier
@@ -125,19 +148,27 @@ fun EditProfileScreen(
         ) {
 
 
-            image.value?.let {
+            imageState.value.data()?.let {
                 ProfileImage(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    pickedMedia = it,
+                    data = it,
                     onClick = {
-                        launchMediaPickerDialogForProfileImage(mediaPickerDialogState, scope, image)
+                        launchMediaPickerDialogForProfileImage(
+                            mediaPickerDialogState,
+                            scope,
+                            imageState
+                        )
                     }
                 )
             } ?: run {
                 AddImageButton(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     onClick = {
-                        launchMediaPickerDialogForProfileImage(mediaPickerDialogState, scope, image)
+                        launchMediaPickerDialogForProfileImage(
+                            mediaPickerDialogState,
+                            scope,
+                            imageState
+                        )
                     }
                 )
             }
@@ -148,7 +179,7 @@ fun EditProfileScreen(
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = email,
+                value = viewModel.email.value,
                 onValueChange = {},
                 enabled = false,
                 label = { Text(text = "Email") }
@@ -209,40 +240,43 @@ fun EditProfileScreen(
                 label = "SAVE",
                 onClick = {
 
-                if (
-                    TextInputState.allHaveValidInputs(
-                        nameInput, bioInput
-                    )
-                ) {
-
-                    gender.value?.let { gender ->
-                        Toast.makeText(context, "Sahi Jawab", Toast.LENGTH_LONG).show()
-
-                        val user = User(
-                            name = nameInput.value(),
-                            email = email,
-                            profileImageUrl = null,
-                            bio = bioInput.value(),
-                            gender = gender,
-                            dob = dob.value,
-                            fcmToken = null
+                    if (
+                        TextInputState.allHaveValidInputs(
+                            nameInput, bioInput
                         )
+                    ) {
 
-                        viewModel.saveUser(user = user, image) {
-                            Toast.makeText(context, "User Profile Created", Toast.LENGTH_LONG)
-                                .show()
-                            navController.navigateTo(Screens.Home.route, Screens.EditProfile.format())
+                        gender.value?.let { gender ->
+                            Toast.makeText(context, "Sahi Jawab", Toast.LENGTH_LONG).show()
+
+                            val user = User(
+                                name = nameInput.value(),
+                                email = viewModel.email.value,
+                                profileImageUrl = null,
+                                bio = bioInput.value(),
+                                gender = gender,
+                                dob = dob.value,
+                                fcmToken = null
+                            )
+
+                            viewModel.saveUser(user = user, imageState) {
+                                Toast.makeText(context, "Saved", Toast.LENGTH_LONG)
+                                    .show()
+                                navController.navigateTo(
+                                    Screens.Home.route,
+                                    Screens.EditProfile.format()
+                                )
+                            }
+
+
                         }
-
-
                     }
-                }
 
-                if (gender.value == null) {
-                    genderError.value = true
-                }
+                    if (gender.value == null) {
+                        genderError.value = true
+                    }
 
-            })
+                })
 
         }
 

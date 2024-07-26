@@ -54,10 +54,12 @@ fun MainActivity.NavHostGraph(
             arguments = listOf(
                 navArgument("email"){
                     type = NavType.StringType
+                    nullable = true
                 }
             )
         ){
-            val email = it.arguments?.getString("email")?: error("Email Not Found")
+            // TODO: Improve readability bu using enum for mode (Create / Edit)
+            val email = it.arguments?.getString("email")
             EditProfileScreen(
                 navController,
                 koinBaseViewModel(),

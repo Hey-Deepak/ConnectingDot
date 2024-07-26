@@ -9,7 +9,7 @@ sealed class Screens(
     data object  Login : Screens("Login")
 
     class EditProfile(
-        val email: String
+        val email: String? = null
     ) : Screens("EditProfile?email$email") {
 
         companion object {

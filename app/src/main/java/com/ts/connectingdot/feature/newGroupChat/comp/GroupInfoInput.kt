@@ -42,7 +42,7 @@ fun GroupInfoInput(
         image.value?.let {
             ProfileImage(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                pickedMedia = it,
+                data = it.uri,
                 onClick = {
                     launchMediaPickerDialogForProfileImage(mediaPickerDialogState, scope, image)
                 }

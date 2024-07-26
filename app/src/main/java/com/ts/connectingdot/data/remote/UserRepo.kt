@@ -3,16 +3,15 @@ package com.ts.connectingdot.data.remote
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.ts.connectingdot.data.remote.FirestoreCollection.userColl
-import com.ts.connectingdot.domain.model.Channel
 import com.ts.connectingdot.domain.model.User
 import kotlinx.coroutines.tasks.await
 
 class UserRepo {
 
-    suspend fun saveUser(user: User): User {
+    suspend fun upsertUser(user: User): User {
 
         val collRef = Firebase.firestore.userColl()
-        val id = collRef.document().id
+        val id = user.id ?: collRef.document().id
 
         collRef.document(id).set(user).await()
 
