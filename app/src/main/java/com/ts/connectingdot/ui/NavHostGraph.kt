@@ -15,6 +15,7 @@ import com.ts.connectingdot.feature.editProfile.EditProfileScreen
 import com.ts.connectingdot.feature.home.HomeScreen
 import com.ts.connectingdot.feature.newChat.NewChatScreen
 import com.ts.connectingdot.feature.newGroupChat.NewGroupChatScreen
+import com.ts.connectingdot.feature.profile.ProfileScreen
 import com.ts.connectingdot.feature.splash.SplashScreen
 import org.koin.androidx.compose.koinViewModel
 
@@ -92,6 +93,23 @@ fun MainActivity.NavHostGraph(
             route = Screens.NewGroupChat.route
         ){
             NewGroupChatScreen(
+                navController,
+                koinBaseViewModel()
+            )
+        }
+
+        //Profile Screen
+        composable(
+            route = Screens.Profile.format(),
+            arguments = listOf(
+                navArgument("userId"){
+                    type = NavType.StringType
+                }
+            )
+        ){
+            val userId = it.arguments?.getString("userId")?: error("UserId Arg Not Found")
+            ProfileScreen(
+                userId,
                 navController,
                 koinBaseViewModel()
             )

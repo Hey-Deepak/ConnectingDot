@@ -1,17 +1,14 @@
 package com.ts.connectingdot.feature.home
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Group
-import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -23,15 +20,14 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.streamliners.base.taskState.comp.whenLoaded
 import com.streamliners.compose.comp.CenterText
 import com.streamliners.helpers.NotificationHelper
+import com.ts.connectingdot.domain.model.Channel
 import com.ts.connectingdot.domain.model.ext.id
 import com.ts.connectingdot.feature.home.comp.ChannelCard
 import com.ts.connectingdot.ui.Screens
@@ -100,21 +96,33 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 if (channels.isEmpty()) {
-                    item { 
+                    item {
                         CenterText(text = "No Chat's Found!")
                     }
                 } else {
-                    items(channels){channel ->
-                        ChannelCard(channel = channel){
-                            navController.navigate(Screens.Chat(channelId = channel.id()).route)
-                        }
+                    items(channels) { channel ->
+                        ChannelCard(
+                            channel = channel,
+                            onChannelCardClick = {
+                                navController.navigate(Screens.Chat(channelId = channel.id()).route)
+                            },
+
+                            onImageClick = {
+                                viewModel.getOtherUserId(channel)
+                                if (channel.type == Channel.Type.OneToOne) {
+                                    navController.navigate(Screens.Profile(userId = viewModel.otherUserIdState.value).route)
+                                } else {
+                                    // Navigate to GroupInfoProfile
+                                }
+                            }
+                        )
+
                     }
 
                 }
 
             }
 
-           
 
         }
 

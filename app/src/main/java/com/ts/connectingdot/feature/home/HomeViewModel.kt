@@ -1,6 +1,7 @@
 package com.ts.connectingdot.feature.home
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import com.google.firebase.Firebase
 import com.google.firebase.messaging.messaging
 import com.streamliners.base.BaseViewModel
@@ -14,6 +15,7 @@ import com.ts.connectingdot.data.remote.UserRepo
 import com.ts.connectingdot.domain.model.Channel
 import com.ts.connectingdot.domain.model.ext.id
 import com.ts.connectingdot.domain.model.ext.profileImageUrl
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 
 class HomeViewModel(
@@ -24,6 +26,7 @@ class HomeViewModel(
 
 
     val channelsState = taskStateOf<List<Channel>>()
+    val otherUserIdState = mutableStateOf("")
 
     fun start() {
         execute {
@@ -47,9 +50,6 @@ class HomeViewModel(
                     }
                 }
 
-            Log.e("1234", channels.toList().toString())
-
-
             channelsState.update(channels)
 
             subscribeForGroupNotification()
@@ -66,6 +66,14 @@ class HomeViewModel(
                         channel.id()
                     ).await()
                 }
+        }
+    }
+
+    fun getOtherUserId(channel: Channel){
+        runBlocking {
+            val currentUserId = localRepo.getLoggedInUser().id()
+            val otherUserId = channel.members.find { it != currentUserId }
+            otherUserIdState.value = otherUserId ?: error("Other User Id Not found in HVM")
         }
     }
 
