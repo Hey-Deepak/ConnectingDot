@@ -1,5 +1,6 @@
 package com.ts.connectingdot.feature.home.comp
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,23 +20,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ts.connectingdot.R
 import com.ts.connectingdot.domain.model.Channel
-import com.ts.connectingdot.helper.userInitialBasedProfileProfile
 import com.ts.connectingdot.ui.comp.general.AsyncImage
-import com.ts.connectingdot.ui.theme.Neutral50
 
 @Composable
 fun ChannelCard(
     channel: Channel,
-    onClick: () -> Unit
+    onChannelCardClick: () -> Unit,
+    onImageClick: () -> Unit,
 ) {
 
     Card (
-        onClick = onClick
     ){
         Row (
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .clickable {
+                    onChannelCardClick()
+                }.padding(horizontal = 16.dp, vertical = 12.dp)
+                ,
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ){
@@ -44,7 +46,10 @@ fun ChannelCard(
             AsyncImage(
                 modifier = Modifier
                     .size(36.dp)
-                    .clip(CircleShape),
+                    .clip(CircleShape)
+                    .clickable {
+                        onImageClick()
+                    },
                 uri = channel.imageUrl ?: "",
                 placeHolder = painterResource(id = R.drawable.ic_person)
             )

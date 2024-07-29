@@ -12,6 +12,7 @@ import com.ts.connectingdot.feature.home.HomeViewModel
 import com.ts.connectingdot.feature.login.LoginViewModel
 import com.ts.connectingdot.feature.newChat.NewChatViewModel
 import com.ts.connectingdot.feature.newGroupChat.NewGroupChatViewModel
+import com.ts.connectingdot.feature.profile.ProfileViewModel
 import com.ts.connectingdot.feature.splash.SplashViewModel
 import com.ts.connectingdot.helper.DataStoreUtil
 import com.ts.connectingdot.helper.fcm.FcmSender
@@ -46,5 +47,6 @@ val viewModelModule = module {
     viewModel { NewGroupChatViewModel(get(), get(), get(), get()) }
     viewModel { HomeViewModel(get(), get(), get()) }
     viewModel { ChatViewModel(get(), get(), get(), get(), get()) }
+    viewModel { ProfileViewModel(get()) }
 
 }

@@ -31,7 +31,7 @@ fun UserCard(
     user: User,
     checked: Boolean? = null,
     onCheckedChanged: (Boolean) -> Unit = {},
-    onClick:() -> Unit
+    onClick:() -> Unit = {}
 ) {
     Card (
         modifier = modifier,

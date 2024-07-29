@@ -6,7 +6,7 @@ sealed class Screens(
 
     data object Splash : Screens("Splash")
 
-    data object  Login : Screens("Login")
+    data object Login : Screens("Login")
 
     class EditProfile(
         val email: String? = null
@@ -17,6 +17,16 @@ sealed class Screens(
         }
 
     }
+
+    class Profile(
+        val userId: String
+    ) : Screens("Profile?userId$userId") {
+        companion object {
+            fun format() = "Profile?userId{userId}"
+        }
+    }
+
+
     class Chat(
         val channelId: String
     ) : Screens("Chat?channelId$channelId") {
@@ -27,8 +37,8 @@ sealed class Screens(
 
     }
 
-    data object Home: Screens("Home")
-    data object NewChat: Screens("NewChatScreen")
-    data object NewGroupChat: Screens("NewGroupChatScreen")
+    data object Home : Screens("Home")
+    data object NewChat : Screens("NewChatScreen")
+    data object NewGroupChat : Screens("NewGroupChatScreen")
 
 }
