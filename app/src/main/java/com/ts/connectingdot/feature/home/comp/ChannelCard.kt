@@ -56,6 +56,9 @@ fun ChannelCard(
 
             Column(
                 modifier = Modifier.weight(1f)
+                    .clickable {
+                        onChannelCardClick()
+                    }
             ) {
                 // TODO: if OneToOne, show otherUser.name otherwise channel.name
                 Text(text = channel.name,
