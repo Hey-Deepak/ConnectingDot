@@ -12,6 +12,7 @@ import com.ts.connectingdot.MainActivity
 import com.ts.connectingdot.feature.chat.ChatScreen
 import com.ts.connectingdot.feature.login.LoginScreen
 import com.ts.connectingdot.feature.editProfile.EditProfileScreen
+import com.ts.connectingdot.feature.groupInfo.GroupInfoScreen
 import com.ts.connectingdot.feature.home.HomeScreen
 import com.ts.connectingdot.feature.newChat.NewChatScreen
 import com.ts.connectingdot.feature.newGroupChat.NewGroupChatScreen
@@ -110,6 +111,22 @@ fun MainActivity.NavHostGraph(
             val userId = it.arguments?.getString("userId")?: error("UserId Arg Not Found")
             ProfileScreen(
                 userId,
+                navController,
+                koinBaseViewModel()
+            )
+        }
+        //GroupInfo Screen
+        composable(
+            route = Screens.GroupInfo.format(),
+            arguments = listOf(
+                navArgument("channelId"){
+                    type = NavType.StringType
+                }
+            )
+        ){
+            val channelId = it.arguments?.getString("channelId")?: error("channelId Arg Not Found")
+            GroupInfoScreen(
+                channelId,
                 navController,
                 koinBaseViewModel()
             )

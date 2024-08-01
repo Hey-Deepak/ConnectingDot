@@ -112,7 +112,7 @@ fun HomeScreen(
                                 if (channel.type == Channel.Type.OneToOne) {
                                     navController.navigate(Screens.Profile(userId = viewModel.otherUserIdState.value).route)
                                 } else {
-                                    // Navigate to GroupInfoProfile
+                                    navController.navigate(Screens.GroupInfo(channelId = channel.id()).route)
                                 }
                             }
                         )

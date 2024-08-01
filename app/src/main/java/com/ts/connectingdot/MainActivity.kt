@@ -15,7 +15,7 @@ import com.ts.connectingdot.helper.temp.Scripts
 import com.ts.connectingdot.ui.NavHostGraph
 import com.ts.connectingdot.ui.theme.ConnectingDotTheme
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity()  {
 
     override var buildType: String = BuildConfig.BUILD_TYPE
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -8,6 +8,7 @@ import com.ts.connectingdot.data.remote.UserRepo
 import com.ts.connectingdot.domain.usecase.NewMessageNotifier
 import com.ts.connectingdot.feature.chat.ChatViewModel
 import com.ts.connectingdot.feature.editProfile.EditProfileViewModel
+import com.ts.connectingdot.feature.groupInfo.GroupInfoViewModel
 import com.ts.connectingdot.feature.home.HomeViewModel
 import com.ts.connectingdot.feature.login.LoginViewModel
 import com.ts.connectingdot.feature.newChat.NewChatViewModel
@@ -48,5 +49,6 @@ val viewModelModule = module {
     viewModel { HomeViewModel(get(), get(), get()) }
     viewModel { ChatViewModel(get(), get(), get(), get(), get()) }
     viewModel { ProfileViewModel(get()) }
+    viewModel { GroupInfoViewModel(get(), get()) }
 
 }

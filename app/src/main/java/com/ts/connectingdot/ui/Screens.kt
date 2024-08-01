@@ -26,6 +26,14 @@ sealed class Screens(
         }
     }
 
+    class GroupInfo(
+        val channelId: String
+    ) : Screens("GroupInfo?channelId$channelId") {
+        companion object {
+            fun format() = "GroupInfo?channelId{channelId}"
+        }
+    }
+
 
     class Chat(
         val channelId: String
