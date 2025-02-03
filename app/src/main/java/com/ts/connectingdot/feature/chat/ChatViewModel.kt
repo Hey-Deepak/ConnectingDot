@@ -59,9 +59,7 @@ class ChatViewModel(
             launch {
                 // TODO: Fetch list only if group channel
                 val users = userRepo.getAllUsers()
-                channelRepo.subscribeToChannel(channelId).collectLatest {
-
-                    val channel = channelRepo.getChannel(channelId)
+                channelRepo.subscribeToChannel(channelId).collectLatest { channel ->
                     data.update(
                         Data(
                             channel = channel,
