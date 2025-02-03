@@ -26,7 +26,6 @@ class HomeViewModel(
 
 
     val channelsState = taskStateOf<List<Channel>>()
-    val otherUserIdState = mutableStateOf("")
 
     fun start() {
         execute {
@@ -69,12 +68,16 @@ class HomeViewModel(
         }
     }
 
-    fun getOtherUserId(channel: Channel){
-        runBlocking {
+    fun getOtherUserId(
+        channel: Channel,
+        onOtherUserIdReady: (String) -> Unit){
+        execute {
             val currentUserId = localRepo.getLoggedInUser().id()
             val otherUserId = channel.members.find { it != currentUserId }
-            otherUserIdState.value = otherUserId ?: error("Other User Id Not found in HVM")
+            onOtherUserIdReady(otherUserId ?: error("Other User Id Not found in HVM"))
         }
+
+
     }
 
 }

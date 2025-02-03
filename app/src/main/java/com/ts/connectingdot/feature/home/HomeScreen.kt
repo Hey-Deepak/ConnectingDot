@@ -108,11 +108,12 @@ fun HomeScreen(
                             },
 
                             onImageClick = {
-                                viewModel.getOtherUserId(channel)
-                                if (channel.type == Channel.Type.OneToOne) {
-                                    navController.navigate(Screens.Profile(userId = viewModel.otherUserIdState.value).route)
-                                } else {
-                                    navController.navigate(Screens.GroupInfo(channelId = channel.id()).route)
+                                viewModel.getOtherUserId(channel){ otherUserId ->
+                                    if (channel.type == Channel.Type.OneToOne) {
+                                        navController.navigate(Screens.Profile(userId = otherUserId).route)
+                                    } else {
+                                        navController.navigate(Screens.GroupInfo(channelId = channel.id()).route)
+                                    }
                                 }
                             }
                         )
