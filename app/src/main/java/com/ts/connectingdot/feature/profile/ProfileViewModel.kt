@@ -16,14 +16,12 @@ class ProfileViewModel(
     val otherUserState = taskStateOf<User>()
 
     fun start(userId: String) {
-
         execute(true) {
-
-            otherUserNameState.value = userRepo.getUserById(userId).name
+            val otherUser = userRepo.getUserById(userId)
+            otherUserNameState.value = otherUser.name
             otherUserState.load {
-                userRepo.getUserById(userId)
+                otherUser
             }
-
         }
     }
 }
